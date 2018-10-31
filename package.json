@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "elm-test && elm-make --yes src/Main.elm && elm-format --validate ."
+    "test": "elm-test && elm-make --yes src/GifHoster.elm && elm-format --validate ."
   },
   "keywords": [],
   "author": "",

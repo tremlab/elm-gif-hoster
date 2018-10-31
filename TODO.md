@@ -1,4 +1,4 @@
-- [ ] show a gif from the library
+- [x] show a gif from the library
 - [ ] randomly show a gif from the library
 - [ ] search for a gif by keyword
 - [ ] search for a gif by IP tag
