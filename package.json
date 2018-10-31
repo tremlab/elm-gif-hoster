@@ -1,0 +1,17 @@
+{
+  "name": "elm-gif-hoster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "elm-test && elm-make --yes src/Main.elm && elm-format --validate ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "elm": "^0.18.0-exp5",
+    "elm-format": "^0.8.1",
+    "elm-test": "^0.18.13-beta4"
+  }
+}
