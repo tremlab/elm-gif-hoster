@@ -1,8 +1,8 @@
 - [x] show a gif from the library
-- [ ] randomly show a gif from the library
 - [ ] search for a gif by keyword
 - [ ] search for a gif by IP tag
 - [ ] autocomplete entry for searching for IP
+- [ ] randomly show a gif from the library
 - [ ] search for a gif by IP tag and keyword together
 - [ ] upload a gif (or import a gif by URL)
 - [ ] add IP tags to a uploaded gif
