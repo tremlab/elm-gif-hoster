@@ -1,5 +1,6 @@
 module GifHoster exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
+import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes exposing (for, id, src)
 import Html.Events exposing (onClick, onInput)
@@ -17,6 +18,7 @@ main =
 
 type alias Model =
     { showSearchResult : Bool
+    , library : Dict String String
     }
 
 
@@ -28,6 +30,11 @@ type Msg
 init : ( Model, Cmd Msg )
 init =
     ( { showSearchResult = False
+      , library =
+            Dict.fromList
+                [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
+                , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
+                ]
       }
     , Cmd.none
     )
@@ -55,7 +62,12 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     Html.div []
-        [ Html.img [ src "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" ] []
+        [ case Dict.get "default" model.library of
+            Just defaultImageUrl ->
+                Html.img [ src defaultImageUrl ] []
+
+            Nothing ->
+                Html.text "There are no images in your library.  Please add some."
         , Html.label [ for "search" ]
             [ Html.text "Search"
             ]
@@ -71,10 +83,15 @@ view model =
         , if model.showSearchResult then
             Html.div []
                 [ Html.text "Search results"
-                , Html.img
-                    [ src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif"
-                    ]
-                    []
+                , case Dict.get "funny" model.library of
+                    Nothing ->
+                        Html.text "Sorry, no matching search results."
+
+                    Just imageUrl ->
+                        Html.img
+                            [ src imageUrl
+                            ]
+                            []
                 ]
 
           else
