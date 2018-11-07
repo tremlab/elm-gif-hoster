@@ -18,6 +18,7 @@ main =
 
 type alias Model =
     { showSearchResult : Bool
+    , currentSearchTerm : String
     , library : Dict String String
     }
 
@@ -30,6 +31,7 @@ type Msg
 init : ( Model, Cmd Msg )
 init =
     ( { showSearchResult = False
+      , currentSearchTerm = ""
       , library =
             Dict.fromList
                 [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
@@ -43,8 +45,8 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchTextChange _ ->
-            ( model
+        SearchTextChange inputText ->
+            ( { model | currentSearchTerm = inputText }
             , Cmd.none
             )
 
@@ -83,7 +85,7 @@ view model =
         , if model.showSearchResult then
             Html.div []
                 [ Html.text "Search results"
-                , case Dict.get "funny" model.library of
+                , case Dict.get model.currentSearchTerm model.library of
                     Nothing ->
                         Html.text "Sorry, no matching search results."
 
