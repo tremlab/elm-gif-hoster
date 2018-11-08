@@ -20,6 +20,7 @@ type alias Model =
     { showSearchResult : Bool
     , currentSearchTerm : String
     , library : Dict String String
+    , searchResults : List String
     }
 
 
@@ -37,6 +38,7 @@ init =
                 [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
                 , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
                 ]
+      , searchResults = []
       }
     , Cmd.none
     )
@@ -51,7 +53,16 @@ update msg model =
             )
 
         SubmitSearchClick ->
-            ( { model | showSearchResult = True }
+            ( { model
+                | showSearchResult = True
+                , searchResults =
+                    case Dict.get model.currentSearchTerm model.library of
+                        Nothing ->
+                            []
+
+                        Just imageUrl ->
+                            [ imageUrl ]
+              }
             , Cmd.none
             )
 
@@ -83,19 +94,20 @@ view model =
             ]
             [ Html.text "Search" ]
         , if model.showSearchResult then
-            Html.div []
-                [ Html.text "Search results"
-                , case Dict.get model.currentSearchTerm model.library of
-                    Nothing ->
-                        Html.text "Sorry, no matching search results."
-
-                    Just imageUrl ->
-                        Html.img
-                            [ src imageUrl
-                            ]
-                            []
-                ]
+            Html.div [] <|
+                List.concat
+                    [ [ Html.text "Search results" ]
+                    , List.map viewSearchResult model.searchResults
+                    ]
 
           else
             Html.text ""
         ]
+
+
+viewSearchResult : String -> Html msg
+viewSearchResult imageUrl =
+    Html.img
+        [ src imageUrl
+        ]
+        []

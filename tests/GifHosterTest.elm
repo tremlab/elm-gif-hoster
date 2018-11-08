@@ -36,8 +36,20 @@ all =
                     |> shouldHave [ text "Search results" ]
                     |> expectViewHas
                         [ tag "img"
-                        , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif")
+                        , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
+                        ]
+        , test "after initial search, don't search again until button is clicked" <|
+            \() ->
+                start
+                    -- search for "funny"
+                    |> fillIn "search" "Search" "funny"
+                    |> clickButton "Search"
+                    |> fillIn "search" "Search" "sad"
+                    |> expectViewHas
+                        [ tag "img"
+                        , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
                         ]
 
+        -- TODO: typing after searching once, shouldn't search again until you click the button
         -- TODO: search and get no results
         ]
