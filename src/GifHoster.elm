@@ -94,8 +94,17 @@ view model =
             Just searchResults ->
                 Html.div [] <|
                     List.concat
-                        [ [ Html.text "Search results" ]
-                        , List.map viewSearchResult searchResults
+                        [ [ Html.h3 [] [ Html.text "Search results" ] ]
+                        , if List.isEmpty searchResults then
+                            [ Html.text
+                                ("There are no images matching \""
+                                    ++ model.currentSearchTerm
+                                    ++ "\"."
+                                )
+                            ]
+
+                          else
+                            List.map viewSearchResult searchResults
                         ]
 
             Nothing ->

@@ -29,7 +29,6 @@ all =
         , test "searching for keywords and finding results" <|
             \() ->
                 start
-                    -- search for "funny"
                     |> fillIn "search" "Search" "funny"
                     |> clickButton "Search"
                     -- finds Riker/Klingong gif
@@ -41,7 +40,6 @@ all =
         , test "after initial search, don't search again until button is clicked" <|
             \() ->
                 start
-                    -- search for "funny"
                     |> fillIn "search" "Search" "funny"
                     |> clickButton "Search"
                     |> fillIn "search" "Search" "sad"
@@ -49,7 +47,12 @@ all =
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
                         ]
-
-        -- TODO: typing after searching once, shouldn't search again until you click the button
-        -- TODO: search and get no results
+        , test "searching with no results shows a message" <|
+            \() ->
+                start
+                    |> fillIn "search" "Search" "kjfhgkyrthnskdfjklsut"
+                    |> clickButton "Search"
+                    |> expectViewHas
+                        [ text "There are no images matching \"kjfhgkyrthnskdfjklsut\"."
+                        ]
         ]
