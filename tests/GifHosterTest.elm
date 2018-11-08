@@ -55,4 +55,6 @@ all =
                     |> expectViewHas
                         [ text "There are no images matching \"kjfhgkyrthnskdfjklsut\"."
                         ]
+
+        -- TODO - fix 'no results' message to NOT update as user types new input.
         ]
