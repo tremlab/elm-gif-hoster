@@ -17,10 +17,9 @@ main =
 
 
 type alias Model =
-    { showSearchResult : Bool
-    , currentSearchTerm : String
+    { currentSearchTerm : String
     , library : Dict String String
-    , searchResults : List String
+    , searchResults : Maybe (List String)
     }
 
 
@@ -31,14 +30,13 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { showSearchResult = False
-      , currentSearchTerm = ""
+    ( { currentSearchTerm = ""
       , library =
             Dict.fromList
                 [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
                 , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
                 ]
-      , searchResults = []
+      , searchResults = Nothing
       }
     , Cmd.none
     )
@@ -54,14 +52,13 @@ update msg model =
 
         SubmitSearchClick ->
             ( { model
-                | showSearchResult = True
-                , searchResults =
+                | searchResults =
                     case Dict.get model.currentSearchTerm model.library of
                         Nothing ->
-                            []
+                            Just []
 
                         Just imageUrl ->
-                            [ imageUrl ]
+                            Just [ imageUrl ]
               }
             , Cmd.none
             )
@@ -93,15 +90,16 @@ view model =
             [ onClick SubmitSearchClick
             ]
             [ Html.text "Search" ]
-        , if model.showSearchResult then
-            Html.div [] <|
-                List.concat
-                    [ [ Html.text "Search results" ]
-                    , List.map viewSearchResult model.searchResults
-                    ]
+        , case model.searchResults of
+            Just searchResults ->
+                Html.div [] <|
+                    List.concat
+                        [ [ Html.text "Search results" ]
+                        , List.map viewSearchResult searchResults
+                        ]
 
-          else
-            Html.text ""
+            Nothing ->
+                Html.text ""
         ]
 
 
