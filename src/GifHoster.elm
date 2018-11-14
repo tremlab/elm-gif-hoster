@@ -17,9 +17,10 @@ main =
 
 
 type alias Model =
-    { currentSearchTerm : String
+    { currentUserInput : String
     , library : Dict String String
     , searchResults : Maybe (List String)
+    , searchedTerm : String
     }
 
 
@@ -30,13 +31,14 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( { currentSearchTerm = ""
+    ( { currentUserInput = ""
       , library =
             Dict.fromList
                 [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
                 , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
                 ]
       , searchResults = Nothing
+      , searchedTerm = ""
       }
     , Cmd.none
     )
@@ -46,19 +48,21 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SearchTextChange inputText ->
-            ( { model | currentSearchTerm = inputText }
+            ( { model | currentUserInput = inputText }
             , Cmd.none
             )
 
         SubmitSearchClick ->
             ( { model
                 | searchResults =
-                    case Dict.get model.currentSearchTerm model.library of
+                    case Dict.get model.currentUserInput model.library of
                         Nothing ->
                             Just []
 
                         Just imageUrl ->
                             Just [ imageUrl ]
+                , searchedTerm =
+                    model.currentUserInput
               }
             , Cmd.none
             )
@@ -98,7 +102,7 @@ view model =
                         , if List.isEmpty searchResults then
                             [ Html.text
                                 ("There are no images matching \""
-                                    ++ model.currentSearchTerm
+                                    ++ model.searchedTerm
                                     ++ "\"."
                                 )
                             ]

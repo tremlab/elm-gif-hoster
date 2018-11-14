@@ -55,6 +55,13 @@ all =
                     |> expectViewHas
                         [ text "There are no images matching \"kjfhgkyrthnskdfjklsut\"."
                         ]
-
-        -- TODO - fix 'no results' message to NOT update as user types new input.
+        , test "does not search again until the search button is pressed." <|
+            \() ->
+                start
+                    |> fillIn "search" "Search" "bad thing"
+                    |> clickButton "Search"
+                    |> fillIn "search" "Search" "jlkluoiklukljkljok"
+                    |> expectViewHas
+                        [ text "There are no images matching \"bad thing\"."
+                        ]
         ]
