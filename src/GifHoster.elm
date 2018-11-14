@@ -19,9 +19,14 @@ main =
 type alias Model =
     { currentUserInput : String
     , library : Dict String String
-    , searchResults : Maybe (List String)
-    , searchedTerm : String
+    , searchState : SearchState
     }
+
+
+type SearchState
+    = NotYetSearched
+    | ResultsFound (List String)
+    | NoResults { searchTerm : String }
 
 
 type Msg
@@ -37,8 +42,7 @@ init =
                 [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
                 , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
                 ]
-      , searchResults = Nothing
-      , searchedTerm = ""
+      , searchState = NotYetSearched
       }
     , Cmd.none
     )
@@ -54,15 +58,13 @@ update msg model =
 
         SubmitSearchClick ->
             ( { model
-                | searchResults =
+                | searchState =
                     case Dict.get model.currentUserInput model.library of
                         Nothing ->
-                            Just []
+                            NoResults { searchTerm = model.currentUserInput }
 
                         Just imageUrl ->
-                            Just [ imageUrl ]
-                , searchedTerm =
-                    model.currentUserInput
+                            ResultsFound [ imageUrl ]
               }
             , Cmd.none
             )
@@ -94,24 +96,25 @@ view model =
             [ onClick SubmitSearchClick
             ]
             [ Html.text "Search" ]
-        , case model.searchResults of
-            Just searchResults ->
+        , case model.searchState of
+            ResultsFound searchResults ->
                 Html.div [] <|
                     List.concat
                         [ [ Html.h3 [] [ Html.text "Search results" ] ]
-                        , if List.isEmpty searchResults then
-                            [ Html.text
-                                ("There are no images matching \""
-                                    ++ model.searchedTerm
-                                    ++ "\"."
-                                )
-                            ]
-
-                          else
-                            List.map viewSearchResult searchResults
+                        , List.map viewSearchResult searchResults
                         ]
 
-            Nothing ->
+            NoResults { searchTerm } ->
+                Html.div []
+                    [ Html.h3 [] [ Html.text "Search results" ]
+                    , Html.text
+                        ("There are no images matching \""
+                            ++ searchTerm
+                            ++ "\"."
+                        )
+                    ]
+
+            NotYetSearched ->
                 Html.text ""
         ]
 

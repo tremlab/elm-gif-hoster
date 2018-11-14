@@ -1,8 +1,10 @@
 module GifHosterTest exposing (all)
 
 import GifHoster
+import Html
 import Html.Attributes exposing (src)
 import Test exposing (..)
+import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, tag, text)
 import TestContext exposing (..)
 
@@ -55,13 +57,22 @@ all =
                     |> expectViewHas
                         [ text "There are no images matching \"kjfhgkyrthnskdfjklsut\"."
                         ]
+        , test "searching with no results shows the search results heading" <|
+            \() ->
+                start
+                    |> fillIn "search" "Search" "kjfhgkyrthnskdfjklsut"
+                    |> clickButton "Search"
+                    |> expectView
+                        (Query.contains
+                            [ Html.h3 [] [ Html.text "Search results" ] ]
+                        )
         , test "does not search again until the search button is pressed." <|
             \() ->
                 start
-                    |> fillIn "search" "Search" "bad thing"
+                    |> fillIn "search" "Search" "zxy123"
                     |> clickButton "Search"
                     |> fillIn "search" "Search" "jlkluoiklukljkljok"
                     |> expectViewHas
-                        [ text "There are no images matching \"bad thing\"."
+                        [ text "There are no images matching \"zxy123\"."
                         ]
         ]
