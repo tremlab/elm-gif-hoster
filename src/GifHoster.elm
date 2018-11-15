@@ -4,12 +4,15 @@ import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes exposing (for, id, src)
 import Html.Events exposing (onClick, onInput)
+import LibraryData
+import LibraryIndex exposing (LibraryIndex)
+import ReneeGifLibrary as Library
 
 
 main : Program Never Model Msg
 main =
     Html.program
-        { init = init
+        { init = init Library.library
         , update = update
         , subscriptions = subscriptions
         , view = view
@@ -18,7 +21,7 @@ main =
 
 type alias Model =
     { currentUserInput : String
-    , library : Dict String String
+    , library : LibraryIndex
     , searchState : SearchState
     }
 
@@ -34,14 +37,10 @@ type Msg
     | SubmitSearchClick
 
 
-init : ( Model, Cmd Msg )
-init =
+init : List LibraryData.Gif -> ( Model, Cmd Msg )
+init gifs =
     ( { currentUserInput = ""
-      , library =
-            Dict.fromList
-                [ ( "default", "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif" )
-                , ( "funny", "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif" )
-                ]
+      , library = LibraryIndex.fromGifs gifs
       , searchState = NotYetSearched
       }
     , Cmd.none
@@ -59,12 +58,12 @@ update msg model =
         SubmitSearchClick ->
             ( { model
                 | searchState =
-                    case Dict.get model.currentUserInput model.library of
-                        Nothing ->
+                    case LibraryIndex.search model.currentUserInput model.library of
+                        [] ->
                             NoResults { searchTerm = model.currentUserInput }
 
-                        Just imageUrl ->
-                            ResultsFound [ imageUrl ]
+                        urls ->
+                            ResultsFound urls
               }
             , Cmd.none
             )
@@ -78,12 +77,9 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     Html.div []
-        [ case Dict.get "default" model.library of
-            Just defaultImageUrl ->
+        [ case LibraryIndex.initialImage model.library of
+            defaultImageUrl ->
                 Html.img [ src defaultImageUrl ] []
-
-            Nothing ->
-                Html.text "There are no images in your library.  Please add some."
         , Html.label [ for "search" ]
             [ Html.text "Search"
             ]

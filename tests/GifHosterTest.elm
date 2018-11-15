@@ -3,6 +3,7 @@ module GifHosterTest exposing (all)
 import GifHoster
 import Html
 import Html.Attributes exposing (src)
+import ReneeGifLibrary as Library
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, tag, text)
@@ -12,7 +13,7 @@ import TestContext exposing (..)
 start : TestContext GifHoster.Msg GifHoster.Model (Cmd GifHoster.Msg)
 start =
     TestContext.create
-        { init = GifHoster.init
+        { init = GifHoster.init Library.library
         , update = GifHoster.update
         , view = GifHoster.view
         }
@@ -28,10 +29,22 @@ all =
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif")
                         ]
-        , test "searching for keywords and finding results" <|
+        , only <|
+            test "searching for keywords and finding results" <|
+                \() ->
+                    start
+                        |> fillIn "search" "Search" "funny"
+                        |> clickButton "Search"
+                        -- finds Riker/Klingong gif
+                        |> shouldHave [ text "Search results" ]
+                        |> expectViewHas
+                            [ tag "img"
+                            , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
+                            ]
+        , test "searching for keywords and finding results (for another search term)" <|
             \() ->
                 start
-                    |> fillIn "search" "Search" "funny"
+                    |> fillIn "search" "Search" "klingon"
                     |> clickButton "Search"
                     -- finds Riker/Klingong gif
                     |> shouldHave [ text "Search results" ]
