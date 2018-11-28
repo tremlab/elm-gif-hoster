@@ -1,8 +1,8 @@
 # Backlog
 
 - [x] show a gif from the library
-- [ ] search for a gif by keyword
-  - [ ] return multiple values
+- [x] search for a gif by keyword
+  - [x] return multiple values
 - [ ] search for a gif by IP tag
 - [ ] autocomplete entry for searching for IP
 - [ ] randomly show a gif from the library
@@ -17,3 +17,4 @@
 # Icebox
 
 - [ ] dealing with multiple search terms in the same search
+- [ ] pressing enter in the search box does the search

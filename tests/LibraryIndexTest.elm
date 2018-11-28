@@ -7,7 +7,7 @@ import Test exposing (..)
 
 all : Test
 all =
-    describe "LiberaryIndex"
+    describe "LibraryIndex"
         [ test "searching by keyword finds a gif." <|
             \() ->
                 LibraryIndex.fromGifs
@@ -26,6 +26,18 @@ all =
                     ]
                     |> LibraryIndex.search "klingon"
                     |> Expect.equal [ "#1" ]
+        , test "searching by keyword and finding multiple gifs" <|
+            \() ->
+                LibraryIndex.fromGifs
+                    [ { url = "#1"
+                      , keywords = [ "funny" ]
+                      }
+                    , { url = "#2"
+                      , keywords = [ "funny" ]
+                      }
+                    ]
+                    |> LibraryIndex.search "funny"
+                    |> Expect.equal [ "#1", "#2" ]
 
         -- TODO: multiple images have the same keyword
         ]

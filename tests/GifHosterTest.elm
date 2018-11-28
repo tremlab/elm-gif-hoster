@@ -1,5 +1,6 @@
 module GifHosterTest exposing (all)
 
+import Expect
 import GifHoster
 import Html
 import Html.Attributes exposing (src)
@@ -50,6 +51,22 @@ all =
                     |> expectViewHas
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
+                        ]
+        , test "searching for a keyword and finding multiple results." <|
+            \() ->
+                start
+                    |> fillIn "search" "Search" "scarf"
+                    |> clickButton "Search"
+                    |> shouldHave [ text "Search results" ]
+                    |> Expect.all
+                        [ expectViewHas
+                            [ tag "img"
+                            , attribute (src "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif") -- "sherlock" gif
+                            ]
+                        , expectViewHas
+                            [ tag "img"
+                            , attribute (src "https://media.giphy.com/media/8cryeowqTlIs0/giphy.gif") -- "minions" gif
+                            ]
                         ]
         , test "after initial search, don't search again until button is clicked" <|
             \() ->

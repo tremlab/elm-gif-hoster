@@ -16,8 +16,18 @@ library =
       -- ip = "TNG"  -- descended from Star Trek superclass
       }
     , { url = "https://media.giphy.com/media/3ohc1dHWofr304zNo4/giphy.gif"
-      , keywords = [ "default", "stylin" ]
+      , keywords = [ "default", "stylin", "duo" ]
 
       -- ip = "Down with Love"
+      }
+    , { url = "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif"
+      , keywords = [ "stylin", "scarf", "duo" ]
+
+      -- ip = "Sherlock"
+      }
+    , { url = "https://media.giphy.com/media/8cryeowqTlIs0/giphy.gif"
+      , keywords = [ "scarf", "duo" ]
+
+      -- ip = "Minions"
       }
     ]
