@@ -15,4 +15,9 @@ library =
 
       -- ip = "TNG"  -- descended from Star Trek superclass
       }
+    , { url = "https://media.giphy.com/media/3ohc1dHWofr304zNo4/giphy.gif"
+      , keywords = [ "default", "stylin" ]
+
+      -- ip = "Down with Love"
+      }
     ]

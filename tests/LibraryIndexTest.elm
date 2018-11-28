@@ -17,6 +17,15 @@ all =
                     ]
                     |> LibraryIndex.search "funny"
                     |> Expect.equal [ "#1" ]
+        , test "a single gif has multiple keywords" <|
+            \() ->
+                LibraryIndex.fromGifs
+                    [ { url = "#1"
+                      , keywords = [ "funny", "klingon" ]
+                      }
+                    ]
+                    |> LibraryIndex.search "klingon"
+                    |> Expect.equal [ "#1" ]
 
         -- TODO: multiple images have the same keyword
         ]

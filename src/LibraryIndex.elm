@@ -15,12 +15,15 @@ fromGifs gifs =
     LibraryIndex
         { keywordLookup =
             let
-                step : LibraryData.Gif -> Dict String String -> Dict String String
-                step gif dict =
-                    Dict.insert (List.head gif.keywords) gif.url dict
+                addGif : LibraryData.Gif -> Dict String String -> Dict String String
+                addGif gif dict =
+                    List.foldl (addKeyword gif.url) dict gif.keywords
+
+                addKeyword : String -> String -> Dict String String -> Dict String String
+                addKeyword url keyword dict =
+                    Dict.insert keyword url dict
             in
-            -- TODO - parse list to dict
-            Dict.empty
+            List.foldl addGif Dict.empty gifs
         }
 
 
@@ -37,4 +40,4 @@ search searchTerm (LibraryIndex index) =
 initialImage : LibraryIndex -> String
 initialImage (LibraryIndex index) =
     Dict.get "default" index.keywordLookup
-        |> Maybe.withDefault "https://media.giphy.com/media/piKaO6KOsO7ArDuiul/giphy.gif"
+        |> Maybe.withDefault "https://media.giphy.com/media/3ohc1dHWofr304zNo4/giphy.gif"
