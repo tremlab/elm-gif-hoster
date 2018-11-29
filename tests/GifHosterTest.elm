@@ -31,23 +31,11 @@ all =
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/3ohc1dHWofr304zNo4/giphy.gif")
                         ]
-        , test "searching for keywords and finding results (clicking button)" <|
+        , test "searching for keywords and finding results" <|
             \() ->
                 start
                     |> fillIn "search" "Search" "funny"
-                    |> clickButton "Search"
-                    |> shouldHave [ text "Search results" ]
-                    |> expectViewHas
-                        [ tag "img"
-                        , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
-                        ]
-        , test "searching for keywords and finding results (pressing enter)" <|
-            \() ->
-                start
-                    |> fillIn "search" "Search" "funny"
-                    |> simulate
-                        (Query.find [ tag "form" ])
-                        Test.Html.Event.submit
+                    |> submitSearch
                     |> shouldHave [ text "Search results" ]
                     |> expectViewHas
                         [ tag "img"
@@ -57,7 +45,7 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "klingon"
-                    |> clickButton "Search"
+                    |> submitSearch
                     -- finds Riker/Klingong gif
                     |> shouldHave [ text "Search results" ]
                     |> expectViewHas
@@ -68,7 +56,7 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "scarf"
-                    |> clickButton "Search"
+                    |> submitSearch
                     |> shouldHave [ text "Search results" ]
                     |> Expect.all
                         [ expectViewHas
@@ -84,7 +72,7 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "funny"
-                    |> clickButton "Search"
+                    |> submitSearch
                     |> fillIn "search" "Search" "sad"
                     |> expectViewHas
                         [ tag "img"
@@ -94,7 +82,7 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "kjfhgkyrthnskdfjklsut"
-                    |> clickButton "Search"
+                    |> submitSearch
                     |> expectViewHas
                         [ text "There are no images matching \"kjfhgkyrthnskdfjklsut\"."
                         ]
@@ -102,7 +90,7 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "kjfhgkyrthnskdfjklsut"
-                    |> clickButton "Search"
+                    |> submitSearch
                     |> expectView
                         (Query.contains
                             [ Html.h3 [] [ Html.text "Search results" ] ]
@@ -111,9 +99,18 @@ all =
             \() ->
                 start
                     |> fillIn "search" "Search" "zxy123"
-                    |> clickButton "Search"
+                    |> submitSearch
                     |> fillIn "search" "Search" "jlkluoiklukljkljok"
                     |> expectViewHas
                         [ text "There are no images matching \"zxy123\"."
                         ]
         ]
+
+
+{-| Simulates what happens EITHER on pressing enter or clicking hte search button. (both cause the form to submit.)
+-}
+submitSearch : TestContext msg model effect -> TestContext msg model effect
+submitSearch =
+    simulate
+        (Query.find [ tag "form" ])
+        Test.Html.Event.submit

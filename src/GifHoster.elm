@@ -91,7 +91,7 @@ view model =
                 ]
                 []
             , Html.button
-                [ onClick SubmitSearch
+                [ Html.Attributes.type_ "submit"
                 ]
                 [ Html.text "Search" ]
             ]
