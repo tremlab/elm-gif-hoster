@@ -1,9 +1,8 @@
 module GifHoster exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
-import Dict exposing (Dict)
 import Html exposing (Html)
 import Html.Attributes exposing (for, id, src)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import LibraryData
 import LibraryIndex exposing (LibraryIndex)
 import ReneeGifLibrary as Library
@@ -34,7 +33,7 @@ type SearchState
 
 type Msg
     = SearchTextChange String
-    | SubmitSearchClick
+    | SubmitSearch
 
 
 init : List LibraryData.Gif -> ( Model, Cmd Msg )
@@ -55,7 +54,7 @@ update msg model =
             , Cmd.none
             )
 
-        SubmitSearchClick ->
+        SubmitSearch ->
             ( { model
                 | searchState =
                     case LibraryIndex.search model.currentUserInput model.library of
@@ -80,18 +79,22 @@ view model =
         [ case LibraryIndex.initialImage model.library of
             defaultImageUrl ->
                 Html.img [ src defaultImageUrl ] []
-        , Html.label [ for "search" ]
-            [ Html.text "Search"
+        , Html.form
+            [ onSubmit SubmitSearch
             ]
-        , Html.input
-            [ id "search"
-            , onInput SearchTextChange
+            [ Html.label [ for "search" ]
+                [ Html.text "Search"
+                ]
+            , Html.input
+                [ id "search"
+                , onInput SearchTextChange
+                ]
+                []
+            , Html.button
+                [ onClick SubmitSearch
+                ]
+                [ Html.text "Search" ]
             ]
-            []
-        , Html.button
-            [ onClick SubmitSearchClick
-            ]
-            [ Html.text "Search" ]
         , case model.searchState of
             ResultsFound searchResults ->
                 Html.div [] <|

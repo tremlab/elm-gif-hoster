@@ -6,6 +6,7 @@ import Html
 import Html.Attributes exposing (src)
 import ReneeGifLibrary
 import Test exposing (..)
+import Test.Html.Event
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (attribute, tag, text)
 import TestContext exposing (..)
@@ -30,12 +31,23 @@ all =
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/3ohc1dHWofr304zNo4/giphy.gif")
                         ]
-        , test "searching for keywords and finding results" <|
+        , test "searching for keywords and finding results (clicking button)" <|
             \() ->
                 start
                     |> fillIn "search" "Search" "funny"
                     |> clickButton "Search"
-                    -- finds Riker/Klingong gif
+                    |> shouldHave [ text "Search results" ]
+                    |> expectViewHas
+                        [ tag "img"
+                        , attribute (src "https://media.giphy.com/media/vKnmQ9Ky8wgTK/giphy.gif") -- "funny" gif
+                        ]
+        , test "searching for keywords and finding results (pressing enter)" <|
+            \() ->
+                start
+                    |> fillIn "search" "Search" "funny"
+                    |> simulate
+                        (Query.find [ tag "form" ])
+                        Test.Html.Event.submit
                     |> shouldHave [ text "Search results" ]
                     |> expectViewHas
                         [ tag "img"

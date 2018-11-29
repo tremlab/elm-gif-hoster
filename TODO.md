@@ -3,7 +3,7 @@
 - [x] show a gif from the library
 - [x] search for a gif by keyword
   - [x] return multiple values
-- [ ] pressing enter in the search box does the search
+- [x] pressing enter in the search box does the search
 - [ ] search for a gif by IP tag
 - [ ] search for a gif by IP tag and keyword together
 - [ ] dealing with multiple search terms in the same search
@@ -19,3 +19,5 @@
 
 # Icebox
 
+- [ ] (chore) upgrade to Elm 0.19
+- [ ] make it not ugly
