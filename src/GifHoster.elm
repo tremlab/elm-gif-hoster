@@ -1,7 +1,7 @@
 module GifHoster exposing (Model, Msg(..), init, main, subscriptions, update, view)
 
 import Html exposing (Html)
-import Html.Attributes exposing (for, id, src)
+import Html.Attributes exposing (for, id, src, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import LibraryData
 import LibraryIndex exposing (LibraryIndex)
@@ -33,6 +33,7 @@ type SearchState
 
 type Msg
     = SearchTextChange String
+    | SearchIpChange String
     | SubmitSearch
 
 
@@ -57,13 +58,24 @@ update msg model =
         SubmitSearch ->
             ( { model
                 | searchState =
-                    case LibraryIndex.search model.currentUserInput model.library of
-                        [] ->
-                            NoResults { searchTerm = model.currentUserInput }
+                    if model.currentUserInput == "" then
+                        -- TODO: search for selected IP
+                        ResultsFound [ "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif" ]
 
-                        urls ->
-                            ResultsFound urls
+                    else
+                        -- TODO: use IP
+                        case LibraryIndex.search model.currentUserInput model.library of
+                            [] ->
+                                NoResults { searchTerm = model.currentUserInput }
+
+                            urls ->
+                                ResultsFound urls
               }
+            , Cmd.none
+            )
+
+        SearchIpChange value ->
+            ( model
             , Cmd.none
             )
 
@@ -94,6 +106,14 @@ view model =
                 [ Html.Attributes.type_ "submit"
                 ]
                 [ Html.text "Search" ]
+            , Html.label [ for "ip" ] [ Html.text "IP" ]
+            , Html.select
+                [ id "ip"
+                , onInput SearchIpChange
+                ]
+                [ Html.option [ value "Star Wars" ] [ Html.text "Star Wars" ]
+                , Html.option [ value "Sherlock" ] [ Html.text "Sherlock" ]
+                ]
             ]
         , case model.searchState of
             ResultsFound searchResults ->

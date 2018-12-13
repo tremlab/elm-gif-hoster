@@ -8,7 +8,8 @@ import ReneeGifLibrary
 import Test exposing (..)
 import Test.Html.Event
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (attribute, tag, text)
+import Test.Html.Selector exposing (attribute, containing, id, tag, text)
+import Test.Runner
 import TestContext exposing (..)
 
 
@@ -104,7 +105,68 @@ all =
                     |> expectViewHas
                         [ text "There are no images matching \"zxy123\"."
                         ]
+        , test "finding all gifs for an IP" <|
+            \() ->
+                start
+                    -- search field is left empty
+                    |> selectOption "ip" "IP" "Sherlock" "Sherlock"
+                    |> submitSearch
+                    |> shouldHave [ text "Search results" ]
+                    |> expectViewHas
+                        [ tag "img"
+                        , attribute (src "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif") -- "Sherlock scarf" gif
+                        ]
         ]
+
+
+{-| TODO: contribute this to <https://github.com/avh4/elm-program-test>
+
+  - NOTE: `optionValue` will be removed in a future version of this API
+  - NOTE: `fieldId` will be removed in a future version of this API
+
+-}
+selectOption : String -> String -> String -> String -> TestContext msg model effect -> TestContext msg model effect
+selectOption fieldId label optionText optionValue testContext =
+    let
+        viewContainsLabel : Expect.Expectation
+        viewContainsLabel =
+            expectView
+                (Query.find
+                    [ tag "label"
+                    , attribute (Html.Attributes.for fieldId)
+                    , text label
+                    ]
+                    >> Query.has []
+                )
+                testContext
+
+        viewContainsRequestedOption : Expect.Expectation
+        viewContainsRequestedOption =
+            TestContext.expectViewHas
+                [ tag "select"
+                , containing
+                    [ tag "option"
+                    , attribute (Html.Attributes.value optionValue)
+                    , containing [ text optionText ]
+                    ]
+                ]
+                testContext
+    in
+    case Test.Runner.getFailureReason viewContainsLabel of
+        Nothing ->
+            case Test.Runner.getFailureReason viewContainsRequestedOption of
+                Nothing ->
+                    simulate
+                        -- TODO: make sure it's the select with the specified label
+                        (Query.find [ tag "select", id fieldId ])
+                        (Test.Html.Event.input optionValue)
+                        testContext
+
+                Just errorInfo ->
+                    TestContext.fail "selectOption (option wasn't there)" errorInfo.description testContext
+
+        Just errorInfo ->
+            TestContext.fail "selectOption (label wasn't there)" errorInfo.description testContext
 
 
 {-| Simulates what happens EITHER on pressing enter or clicking hte search button. (both cause the form to submit.)

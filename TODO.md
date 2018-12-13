@@ -4,7 +4,7 @@
 - [x] search for a gif by keyword
   - [x] return multiple values
 - [x] pressing enter in the search box does the search
-- [ ] search for a gif by IP tag
+- [>] search for a gif by IP tag
 - [ ] search for a gif by IP tag and keyword together
 - [ ] dealing with multiple search terms in the same search
 - [ ] (chore) deploy to production
@@ -21,3 +21,4 @@
 
 - [ ] (chore) upgrade to Elm 0.19
 - [ ] make it not ugly
+- [ ] (chore) consider using https://package.elm-lang.org/packages/rluiten/elm-text-search/latest/ for search indexing
