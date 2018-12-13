@@ -105,7 +105,7 @@ all =
                     |> expectViewHas
                         [ text "There are no images matching \"zxy123\"."
                         ]
-        , test "finding all gifs for an IP" <|
+        , test "finding one gif for an IP" <|
             \() ->
                 start
                     -- search field is left empty
@@ -115,6 +115,23 @@ all =
                     |> expectViewHas
                         [ tag "img"
                         , attribute (src "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif") -- "Sherlock scarf" gif
+                        ]
+        , test "finding all gifs for an IP" <|
+            \() ->
+                start
+                    -- search field is left empty
+                    |> selectOption "ip" "IP" "Sherlock" "Sherlock"
+                    |> submitSearch
+                    |> shouldHave [ text "Search results" ]
+                    |> Expect.all
+                        [ expectViewHas
+                            [ tag "img"
+                            , attribute (src "https://media.giphy.com/media/kioQjY5OshNNC/giphy.gif") -- "Sherlock scarf" gif
+                            ]
+                        , expectViewHas
+                            [ tag "img"
+                            , attribute (src "https://media.giphy.com/media/10ttqzrQQODtUk/giphy.gif") -- "Sherlock smiling" gif
+                            ]
                         ]
         ]
 

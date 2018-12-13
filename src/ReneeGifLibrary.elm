@@ -25,6 +25,11 @@ library =
 
       -- ip = "Sherlock"
       }
+    , { url = "https://media.giphy.com/media/10ttqzrQQODtUk/giphy.gif"
+      , keywords = [ "smiling", "laughing" ]
+
+      -- ip = "Sherlock"
+      }
     , { url = "https://media.giphy.com/media/8cryeowqTlIs0/giphy.gif"
       , keywords = [ "scarf", "duo" ]
 
